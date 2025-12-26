@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import {Loader2} from 'lucide-react'
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ type ButtonProps = {
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
   icon?: React.ReactNode;
+  loading?: boolean
   className?: string; // ✅ Add support
 };
 
@@ -21,10 +23,11 @@ export function Button({
   fullWidth = false,
   disabled = false,
   type = 'button',
+  loading = false,
   icon,
   className = '', // ✅ Add default value
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium focus:outline-none transition-colors';
+  const baseStyles = 'relative inline-flex items-center justify-center rounded-md font-medium focus:outline-none transition-colors';
   const variantStyles = {
     primary: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm',
     secondary: 'bg-gray-700 hover:bg-gray-600 text-white',
@@ -43,7 +46,7 @@ export function Button({
     <motion.button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || loading}
       whileTap={{ scale: disabled ? 1 : 0.97 }}
       whileHover={{ scale: disabled ? 1 : 1.03 }}
       className={`
@@ -55,8 +58,11 @@ export function Button({
         ${className}  // ✅ Append user-defined className
       `}
     >
-      {icon && <span className="mr-2">{icon}</span>}
-      {children}
+      {loading && <Loader2 size={size === 'sm' ? 16 : size === 'md' ? 20 : 24} className='absolute animate-spin'/>}
+      <div className={`${loading && 'invisible'}`}>
+        {icon && <span className="mr-2">{icon}</span>}
+        {children}
+      </div>
     </motion.button>
   );
 }
